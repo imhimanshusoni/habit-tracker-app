@@ -47,14 +47,17 @@ export const habitsAPI = {
     });
   },
 
-  completeHabit: async (id, date) => {
-    return await apiRequest(
-      getApiUrl(API_ENDPOINTS.HABITS.BY_ID(id) + '/complete'),
-      {
-        method: 'POST',
-        body: JSON.stringify({ date }),
-      }
-    );
+  completeHabit: async (habit) => {
+    const today = new Date();
+    // Ensure we don't add duplicate dates
+    const newCompletedDates = [...(habit.completedDates || [])];
+    if (!newCompletedDates.some(d => d.slice(0, 10) === today.toISOString().slice(0, 10))) {
+      newCompletedDates.push(today.toISOString());
+    }
+
+    return await habitsAPI.updateHabit(habit._id, {
+      completedDates: newCompletedDates,
+    });
   },
 };
 

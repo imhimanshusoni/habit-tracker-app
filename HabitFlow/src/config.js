@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // API Configuration
-export const API_BASE_URL = 'http://192.168.0.186:3002/api';
+export const API_BASE_URL = 'https://habit-tracker-app-tyfu.onrender.com/api';
 
 // API Endpoints
 export const API_ENDPOINTS = {
@@ -12,12 +12,12 @@ export const API_ENDPOINTS = {
   },
   HABITS: {
     BASE: '/habits',
-    BY_ID: (id) => `/habits/${id}`,
+    BY_ID: id => `/habits/${id}`,
   },
 };
 
 // Helper function to get full API URL
-export const getApiUrl = (endpoint) => {
+export const getApiUrl = endpoint => {
   if (typeof endpoint === 'function') {
     return `${API_BASE_URL}${endpoint()}`;
   }
@@ -27,10 +27,10 @@ export const getApiUrl = (endpoint) => {
 // Create a wrapper for API calls with common error handling
 export const apiRequest = async (url, options = {}) => {
   const token = await AsyncStorage.getItem('token');
-  
+
   const headers = {
     'Content-Type': 'application/json',
-    ...(token && { 'Authorization': `Bearer ${token}` }),
+    ...(token && { Authorization: `Bearer ${token}` }),
     ...options.headers,
   };
 
@@ -47,14 +47,14 @@ export const apiRequest = async (url, options = {}) => {
         // You might want to redirect to login here
         throw new Error('Session expired. Please log in again.');
       }
-      
+
       const errorData = await response.json().catch(() => ({}));
       throw new Error(errorData.message || 'Something went wrong');
     }
 
     // For DELETE requests that might not return content
     if (response.status === 204) return null;
-    
+
     return await response.json();
   } catch (error) {
     console.error('API Request Error:', error);
