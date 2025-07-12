@@ -159,6 +159,16 @@ npm run ios           # or yarn ios
 * **Navigation** – implemented with *React Navigation* (see `src/navigation/AppNavigator.js`).
 * **State / API** – lightweight state managed with `useState` & `useEffect`; network via `apiRequest` helper that injects JWT from `AsyncStorage`.
 
+### 4. Screenshots
+
+<p float="left">
+  <img src="https://github.com/user-attachments/assets/85e7c0b9-ebdb-4e50-b630-bc4d9125818c" width="200"/>
+  <img src="https://github.com/user-attachments/assets/b5aacc1b-f678-4d41-81d0-85f3fa56bd0c" width="200"/>
+  <img src="https://github.com/user-attachments/assets/6eaa0c07-a4c4-4460-9ddf-7cadfefd6918" width="200"/>
+  <img src="https://github.com/user-attachments/assets/9eca9333-2246-4ef6-a85a-c56ba94eb7ae" width="200"/>
+  <img src="https://github.com/user-attachments/assets/87e2e2c7-f2df-45e4-812f-07ddbf9dc5cb" width="200"/>
+</p>
+
 ---
 
 ## Development workflow
