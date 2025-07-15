@@ -31,10 +31,11 @@ export default function HabitForm({
   });
 
   useEffect(() => {
-    if (initialValues) {
+    if (initialValues && (initialValues as any)._id) {
       setValues(initialValues);
     }
-  }, [initialValues]);
+    // Only run when the habit id changes
+  }, [initialValues && (initialValues as any)._id]);
 
   const handleChange = (
     e: React.ChangeEvent<
