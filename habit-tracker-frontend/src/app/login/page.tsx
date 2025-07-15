@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import api from "@/lib/api";
 import { saveToken } from "@/lib/auth";
+import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -21,8 +22,21 @@ export default function LoginPage() {
 
       saveToken(token);
       router.push("/dashboard");
-    } catch (err: any) {
-      const message = err.response?.data?.error || "Login failed";
+    } catch (err: unknown) {
+      let message = "Login failed";
+      if (
+        err &&
+        typeof err === "object" &&
+        "response" in err &&
+        err.response &&
+        typeof err.response === "object" &&
+        "data" in err.response &&
+        err.response.data &&
+        typeof err.response.data === "object" &&
+        "error" in err.response.data
+      ) {
+        message = (err.response.data as { error?: string }).error || message;
+      }
       setError(message);
     }
   };
@@ -68,12 +82,12 @@ export default function LoginPage() {
         </form>
         <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-300">
           Don’t have an account?{" "}
-          <a
+          <Link
             href="/register"
             className="text-blue-600 hover:underline dark:text-blue-400"
           >
             Register
-          </a>
+          </Link>
         </p>
       </div>
     </div>

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import api from "@/lib/api";
 import { getToken, logout } from "@/lib/auth";
+import Link from "next/link";
 
 type Habit = {
   _id: string;
@@ -29,11 +30,31 @@ export default function DashboardPage() {
       try {
         const res = await api.get("/habits");
         setHabits(res.data);
-      } catch (err: any) {
-        const message = err.response?.data?.error || "Failed to fetch habits";
+      } catch (err: unknown) {
+        const message =
+          err &&
+          typeof err === "object" &&
+          "response" in err &&
+          err.response &&
+          typeof err.response === "object" &&
+          "data" in err.response &&
+          err.response.data &&
+          typeof err.response.data === "object" &&
+          "error" in err.response.data
+            ? (err.response.data as { error?: string }).error ||
+              "Failed to fetch habits"
+            : "Failed to fetch habits";
         setError(message);
 
-        if (err.response?.status === 401) {
+        if (
+          err &&
+          typeof err === "object" &&
+          "response" in err &&
+          err.response &&
+          typeof err.response === "object" &&
+          "status" in err.response &&
+          err.response.status === 401
+        ) {
           logout();
           router.push("/login");
         }
@@ -43,7 +64,7 @@ export default function DashboardPage() {
     };
 
     fetchHabits();
-  }, []);
+  }, [router]);
 
   const handleLogout = () => {
     logout();
@@ -75,12 +96,12 @@ export default function DashboardPage() {
             <p className="text-gray-700 dark:text-gray-200 mb-2">
               No habits yet.
             </p>
-            <a
+            <Link
               href="/dashboard/new"
               className="inline-block px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
             >
               Create one
-            </a>
+            </Link>
           </div>
         ) : (
           <ul className="space-y-4">
@@ -103,12 +124,12 @@ export default function DashboardPage() {
                     </div>
                   )}
                 </div>
-                <a
+                <Link
                   href={`/dashboard/${habit._id}`}
                   className="mt-3 sm:mt-0 sm:ml-4 inline-block px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
                 >
                   View / Edit
-                </a>
+                </Link>
               </li>
             ))}
           </ul>

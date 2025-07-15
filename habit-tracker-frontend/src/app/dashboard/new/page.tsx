@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import api from "@/lib/api";
 import { logout } from "@/lib/auth";
 import { useState } from "react";
+import Link from "next/link";
 
 export default function NewHabitPage() {
   const router = useRouter();
@@ -17,10 +18,31 @@ export default function NewHabitPage() {
     try {
       await api.post("/habits", values);
       router.push("/dashboard");
-    } catch (err: any) {
-      const message = err.response?.data?.error || "Failed to create habit";
+    } catch (err: unknown) {
+      let message = "Failed to create habit";
+      if (
+        err &&
+        typeof err === "object" &&
+        "response" in err &&
+        err.response &&
+        typeof err.response === "object" &&
+        "data" in err.response &&
+        err.response.data &&
+        typeof err.response.data === "object" &&
+        "error" in err.response.data
+      ) {
+        message = (err.response.data as { error?: string }).error || message;
+      }
       setError(message);
-      if (err.response?.status === 401) {
+      if (
+        err &&
+        typeof err === "object" &&
+        "response" in err &&
+        err.response &&
+        typeof err.response === "object" &&
+        "status" in err.response &&
+        err.response.status === 401
+      ) {
         logout();
         router.push("/login");
       }
@@ -45,14 +67,14 @@ export default function NewHabitPage() {
           submitText={saving ? "Creating..." : "Create Habit"}
         />
         <div className="mt-6 flex justify-center">
-          <a
+          <Link
             href="/dashboard"
             className="inline-block px-4 py-2 bg-gray-200 dark:bg-neutral-700 hover:bg-gray-300 dark:hover:bg-neutral-600 text-gray-800 dark:text-gray-100 rounded-lg font-medium transition-colors"
           >
             <span className="text-gray-900 dark:text-white">
               ← Back to Dashboard
             </span>
-          </a>
+          </Link>
         </div>
       </div>
     </div>

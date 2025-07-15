@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import api from "@/lib/api";
 import { getToken, logout } from "@/lib/auth";
 import HabitForm from "@/components/HabitForm";
+import Link from "next/link";
 
 type Habit = {
   _id: string;
@@ -26,11 +27,32 @@ export default function HabitDetailPage() {
     try {
       const res = await api.get(`/habits/${id}`);
       setHabit(res.data);
-    } catch (err: any) {
-      const message = err.response?.data?.error || "Failed to fetch habit";
+    } catch (err: unknown) {
+      let message = "Failed to fetch habit";
+      if (
+        err &&
+        typeof err === "object" &&
+        "response" in err &&
+        err.response &&
+        typeof err.response === "object" &&
+        "data" in err.response &&
+        err.response.data &&
+        typeof err.response.data === "object" &&
+        "error" in err.response.data
+      ) {
+        message = (err.response.data as { error?: string }).error || message;
+      }
       setError(message);
 
-      if (err.response?.status === 401) {
+      if (
+        err &&
+        typeof err === "object" &&
+        "response" in err &&
+        err.response &&
+        typeof err.response === "object" &&
+        "status" in err.response &&
+        err.response.status === 401
+      ) {
         logout();
         router.push("/login");
       }
@@ -41,7 +63,7 @@ export default function HabitDetailPage() {
 
   useEffect(() => {
     fetchHabit();
-  }, [id]);
+  }, [id, fetchHabit]);
 
   // Change handleUpdate to accept HabitFormValues
   const handleUpdate = async (values: {
@@ -58,8 +80,22 @@ export default function HabitDetailPage() {
         frequency: values.frequency,
       });
       router.push("/dashboard");
-    } catch (err: any) {
-      setError(err.response?.data?.error || "Failed to update habit");
+    } catch (err: unknown) {
+      let message = "Failed to update habit";
+      if (
+        err &&
+        typeof err === "object" &&
+        "response" in err &&
+        err.response &&
+        typeof err.response === "object" &&
+        "data" in err.response &&
+        err.response.data &&
+        typeof err.response.data === "object" &&
+        "error" in err.response.data
+      ) {
+        message = (err.response.data as { error?: string }).error || message;
+      }
+      setError(message);
     } finally {
       setSaving(false);
     }
@@ -71,8 +107,22 @@ export default function HabitDetailPage() {
     try {
       await api.delete(`/habits/${id}`);
       router.push("/dashboard");
-    } catch (err: any) {
-      setError(err.response?.data?.error || "Failed to delete habit");
+    } catch (err: unknown) {
+      let message = "Failed to delete habit";
+      if (
+        err &&
+        typeof err === "object" &&
+        "response" in err &&
+        err.response &&
+        typeof err.response === "object" &&
+        "data" in err.response &&
+        err.response.data &&
+        typeof err.response.data === "object" &&
+        "error" in err.response.data
+      ) {
+        message = (err.response.data as { error?: string }).error || message;
+      }
+      setError(message);
     }
   };
 
@@ -118,14 +168,15 @@ export default function HabitDetailPage() {
           Delete Habit
         </button>
         <div className="mt-4 flex justify-center">
-          <a
+          {/* Replace <a> with <Link> for navigation */}
+          <Link
             href="/dashboard"
             className="inline-block px-4 py-2 bg-gray-200 dark:bg-neutral-700 hover:bg-gray-300 dark:hover:bg-neutral-600 text-gray-800 dark:text-gray-100 rounded-lg font-medium transition-colors"
           >
             <span className="text-gray-900 dark:text-white">
               ← Back to Dashboard
             </span>
-          </a>
+          </Link>
         </div>
       </div>
     </div>
