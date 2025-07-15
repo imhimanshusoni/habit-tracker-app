@@ -1,6 +1,6 @@
 # Habit Tracker Monorepo
 
-A **full-stack Habit Tracking application** composed of a REST API built with **Node.js / Express / MongoDB** and a **cross-platform mobile client** built with **React Native**.  Both code-bases live in this monorepo for a first-class DX.
+A **full-stack Habit Tracking application** composed of a REST API built with **Node.js / Express / MongoDB** and a **cross-platform mobile client** built with **React Native**. Both code-bases live in this monorepo for a first-class DX.
 
 ---
 
@@ -9,10 +9,11 @@ A **full-stack Habit Tracking application** composed of a REST API built with **
 1. [Repository structure](#repository-structure)
 2. [Prerequisites](#prerequisites)
 3. [Backend ‑ API](#backend--api)
-4. [Mobile ‑ React Native](#mobile--react-native)
-5. [Development workflow](#development-workflow)
-6. [Contributing](#contributing)
-7. [License](#license)
+4. [Frontend – Next.js Web App](#frontend--next.js-web-app)
+5. [Mobile ‑ React Native](#mobile--react-native)
+6. [Development workflow](#development-workflow)
+7. [Contributing](#contributing)
+8. [License](#license)
 
 ---
 
@@ -27,6 +28,12 @@ A **full-stack Habit Tracking application** composed of a REST API built with **
 │   ├── routes/       # API route definitions (auth, habits)
 │   ├── server.js     # App entry-point
 │   └── .env          # Environment variables (never commit secrets!)
+│
+├── habit-tracker-frontend/   # Next.js web frontend
+│   ├── src/                  # App source code (pages, components, lib)
+│   ├── public/               # Static assets
+│   ├── package.json          # Frontend dependencies & scripts
+│   └── ...                   # Other config files
 │
 └── HabitFlow/        # React Native mobile application
     ├── src/
@@ -44,13 +51,13 @@ A **full-stack Habit Tracking application** composed of a REST API built with **
 
 ## Prerequisites
 
-| Tool | Version | Notes |
-|------|---------|-------|
-| Node.js | ≥ 18 | LTS recommended |
-| npm / Yarn | latest | package managers |
-| MongoDB | ≥ 6 | local or Atlas cluster |
-| Watchman | optional | macOS file-watching (React Native) |
-| Xcode 14+ | iOS build/run |
+| Tool                  | Version           | Notes                              |
+| --------------------- | ----------------- | ---------------------------------- |
+| Node.js               | ≥ 18              | LTS recommended                    |
+| npm / Yarn            | latest            | package managers                   |
+| MongoDB               | ≥ 6               | local or Atlas cluster             |
+| Watchman              | optional          | macOS file-watching (React Native) |
+| Xcode 14+             | iOS build/run     |
 | Android Studio + SDKs | Android build/run |
 
 ---
@@ -78,6 +85,7 @@ JWT_SECRET=super-secret-string
 ```bash
 npm run dev   # uses nodemon for auto-reload
 ```
+
 Server will start on `http://localhost:5000` (or `$PORT`).
 
 ### 3. API reference
@@ -86,31 +94,67 @@ All endpoints are prefixed with `/api`.
 
 #### Auth
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/auth/register` | Register a user `{ email, password }` |
-| POST | `/auth/login` | Login & receive **JWT** `{ email, password }` |
-| GET  | `/auth/me` | Get current user (JWT `Bearer <token>` required) |
+| Method | Endpoint         | Description                                      |
+| ------ | ---------------- | ------------------------------------------------ |
+| POST   | `/auth/register` | Register a user `{ email, password }`            |
+| POST   | `/auth/login`    | Login & receive **JWT** `{ email, password }`    |
+| GET    | `/auth/me`       | Get current user (JWT `Bearer <token>` required) |
 
-#### Habits  *(Protected – JWT required)*
+#### Habits _(Protected – JWT required)_
 
-| Method | Endpoint | Body | Description |
-|--------|----------|------|-------------|
-| POST | `/habits` | `{ title, description?, frequency? }` | Create a habit |
-| GET  | `/habits` | – | List all habits for user |
-| GET  | `/habits/:id` | – | Get single habit |
-| PUT  | `/habits/:id` | Any of the habit fields | Update habit |
-| DELETE | `/habits/:id` | – | Delete habit |
+| Method | Endpoint      | Body                                  | Description              |
+| ------ | ------------- | ------------------------------------- | ------------------------ |
+| POST   | `/habits`     | `{ title, description?, frequency? }` | Create a habit           |
+| GET    | `/habits`     | –                                     | List all habits for user |
+| GET    | `/habits/:id` | –                                     | Get single habit         |
+| PUT    | `/habits/:id` | Any of the habit fields               | Update habit             |
+| DELETE | `/habits/:id` | –                                     | Delete habit             |
 
-> `frequency` can be `daily`, `weekly` or `monthly`.  `completedDates` (array of dates) can also be sent on update.
+> `frequency` can be `daily`, `weekly` or `monthly`. `completedDates` (array of dates) can also be sent on update.
 
 ### 4. Testing
 
-Minimal integration tests live in `api/test.js`.  Run:
+Minimal integration tests live in `api/test.js`. Run:
 
 ```bash
 node test.js
 ```
+
+---
+
+## Frontend – Next.js Web App
+
+### 1. Setup
+
+```bash
+cd habit-tracker-frontend
+npm install
+```
+
+### 2. Development server
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser to view the app.
+
+### 3. Environment variables
+
+Set the API base URL in a `.env.local` file:
+
+```
+NEXT_PUBLIC_API_URL=http://localhost:5000
+```
+
+(Or use your deployed API URL.)
+
+### 4. App overview
+
+- **Authentication** – Login and registration pages (`/login`, `/register`).
+- **Dashboard** – View, create, edit, and delete habits (`/dashboard`).
+- **API integration** – Uses JWT auth, stores token in localStorage, and communicates with the backend API.
+- **UI** – Built with [Tailwind CSS](https://tailwindcss.com/) and [Next.js App Router](https://nextjs.org/docs/app).
 
 ---
 
@@ -124,9 +168,11 @@ npm install            # or yarn
 ```
 
 The **API base-URL** is set in `src/config.js`:
+
 ```js
-export const API_BASE_URL = 'https://habit-tracker-app-tyfu.onrender.com/api';
+export const API_BASE_URL = "https://habit-tracker-app-tyfu.onrender.com/api";
 ```
+
 If you run the API locally, change it to `http://<local-ip>:5000/api`.
 
 ### 2. Running the app
@@ -134,6 +180,7 @@ If you run the API locally, change it to `http://<local-ip>:5000/api`.
 Open two terminals.
 
 **Terminal A – Metro bundler**
+
 ```bash
 npm start # or yarn start
 ```
@@ -141,11 +188,13 @@ npm start # or yarn start
 **Terminal B – build & run**
 
 • Android:
+
 ```bash
 npm run android  # or yarn android
 ```
 
 • iOS (macOS):
+
 ```bash
 bundle install        # once – installs CocoaPods via Bundler
 bundle exec pod install --project-directory=ios
@@ -154,10 +203,10 @@ npm run ios           # or yarn ios
 
 ### 3. App overview
 
-* **Authentication flow** – `LoginScreen`, `RegisterScreen`, `AuthLoadingScreen`.
-* **Main flow** – `HomeScreen` lists user habits and allows CRUD actions through `HabitCard` & `HabitForm` components.
-* **Navigation** – implemented with *React Navigation* (see `src/navigation/AppNavigator.js`).
-* **State / API** – lightweight state managed with `useState` & `useEffect`; network via `apiRequest` helper that injects JWT from `AsyncStorage`.
+- **Authentication flow** – `LoginScreen`, `RegisterScreen`, `AuthLoadingScreen`.
+- **Main flow** – `HomeScreen` lists user habits and allows CRUD actions through `HabitCard` & `HabitForm` components.
+- **Navigation** – implemented with _React Navigation_ (see `src/navigation/AppNavigator.js`).
+- **State / API** – lightweight state managed with `useState` & `useEffect`; network via `apiRequest` helper that injects JWT from `AsyncStorage`.
 
 ---
 
