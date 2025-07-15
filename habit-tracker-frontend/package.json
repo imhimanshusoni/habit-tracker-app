@@ -3,11 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbopack",
     "build": "next build",
-    "next-on-pages": "next-on-pages",
-    "pages:build": "next-on-pages build",
-    "deploy": "npx wrangler pages deploy .vercel/output/static --project-name=habit-tracker",
     "start": "next start",
     "lint": "next lint"
   },
@@ -18,7 +15,6 @@
     "react-dom": "19.1.0"
   },
   "devDependencies": {
-    "@cloudflare/next-on-pages": "^1.13.12",
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
