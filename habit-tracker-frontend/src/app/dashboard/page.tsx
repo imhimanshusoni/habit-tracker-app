@@ -100,7 +100,7 @@ export default function DashboardPage() {
               href="/dashboard/new"
               className="inline-block px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
             >
-              Create one
+              Create New Habit
             </Link>
             <button
               onClick={handleLogout}
