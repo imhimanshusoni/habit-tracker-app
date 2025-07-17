@@ -8,8 +8,12 @@ export type HabitFormValues = {
   frequency: "daily" | "weekly" | "monthly";
 };
 
+type HabitFormValuesWithId = HabitFormValues & {
+  _id?: string;
+};
+
 type HabitFormProps = {
-  initialValues?: HabitFormValues;
+  initialValues?: HabitFormValuesWithId;
   onSubmit: (values: HabitFormValues) => void;
   isSubmitting?: boolean;
   error?: string;
@@ -31,11 +35,10 @@ export default function HabitForm({
   });
 
   useEffect(() => {
-    if (initialValues && (initialValues as any)._id) {
+    if (initialValues?._id) {
       setValues(initialValues);
     }
-    // Only run when the habit id changes
-  }, [initialValues && (initialValues as any)._id]);
+  }, [initialValues?._id]);
 
   const handleChange = (
     e: React.ChangeEvent<

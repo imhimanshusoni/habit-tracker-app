@@ -1,10 +1,10 @@
 "use client";
 export const runtime = "edge";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import api from "@/lib/api";
-import { getToken, logout } from "@/lib/auth";
+import { logout } from "@/lib/auth";
 import HabitForm from "@/components/HabitForm";
 import Link from "next/link";
 
@@ -24,7 +24,7 @@ export default function HabitDetailPage() {
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
 
-  const fetchHabit = async () => {
+  const fetchHabit = useCallback(async () => {
     try {
       const res = await api.get(`/habits/${id}`);
       setHabit(res.data);
@@ -60,7 +60,7 @@ export default function HabitDetailPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id, router]);
 
   useEffect(() => {
     fetchHabit();
