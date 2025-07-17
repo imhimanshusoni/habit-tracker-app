@@ -1,3 +1,0 @@
-name = "habit-tracker-worker"
-compatibility_date = "2025-07-17"
-main = "src/index.ts"  # Adjust if your Worker file is elsewhere
