@@ -176,7 +176,7 @@ NEXT_PUBLIC_API_URL=http://localhost:5000
 
 This project is released under the **MIT License** — see [`LICENSE`](LICENSE) for details.
 
-**Made with ❤️ by [Your Name or Organization]**
+**Made with ❤️ by [Himanshu Soni](https://github.com/imhimanshusoni)**
 
 ## Links
 
